@@ -1,0 +1,30 @@
+body:
+  content: ""
+  type: text
+headers:
+  - key: Accept
+    value: application/json
+method: GET
+name: User found
+order: 1000
+pathVariables:
+  - description: The user ID (e.g. u1, u2)
+    key: id
+    value: u1
+response:
+  body:
+    content: |-
+      {
+        "user": {
+          "id": "u1",
+          "name": "Alice",
+          "email": "alice@example.com"
+        }
+      }
+    type: json
+  headers:
+    - key: Content-Type
+      value: application/json
+  statusCode: 200
+  statusText: OK
+url: http://{{baseUrl}}/users/:id

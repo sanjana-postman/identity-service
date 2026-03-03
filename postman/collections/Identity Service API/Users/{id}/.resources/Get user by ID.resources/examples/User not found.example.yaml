@@ -1,0 +1,25 @@
+$kind: http-example
+request:
+  url: http://{{baseUrl}}:/users/:id#
+  method: GET
+  headers:
+    Accept: application/json
+  pathVariables:
+    - key: id
+      value: u1
+      description: The user ID (e.g. u1, u2)
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 404
+  statusText: Not Found
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "error": "name and email are required"
+      }
+order: 2000

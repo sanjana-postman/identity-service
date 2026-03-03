@@ -1,0 +1,14 @@
+{
+  "relations": [
+    {
+      "spec": "../postman/specs/index.yaml",
+      "collection": "../postman/collections/identity-service-api.postman_collection.json",
+      "options": {
+        "folderStrategy": "Tags"
+      },
+      "syncOptions": {
+        "syncExamples": false
+      }
+    }
+  ]
+}

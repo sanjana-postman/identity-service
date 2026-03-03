@@ -1,0 +1,26 @@
+$kind: http-example
+request:
+  url: http://{{baseUrl}}/users
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "name": "Alice",
+        "email": "alice@example.com"
+      }
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "error": "name and email are required"
+      }
+order: 3000

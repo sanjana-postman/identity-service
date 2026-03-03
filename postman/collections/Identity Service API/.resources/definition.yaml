@@ -1,0 +1,4 @@
+$kind: collection
+description: In-memory identity/user management API
+variables:
+  baseUrl: http://localhost:3001

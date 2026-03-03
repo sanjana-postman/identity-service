@@ -1,0 +1,6 @@
+name: Identity Service - UAT
+values:
+  - key: baseUrl
+    value: uat.identity-service.example.com
+    enabled: true
+    type: default

@@ -1,0 +1,13 @@
+{
+  "id": "1f3f3461-3f08-48a5-81a4-993ca1e79203",
+  "version": 1,
+  "name": "Identity Service Mock",
+  "protocol": "http",
+  "port": 4500,
+  "mockSrc": "./mock.js",
+  "autoRestartOnChange": true,
+  "logging": {
+    "level": "verbose",
+    "showBody": true
+  }
+}

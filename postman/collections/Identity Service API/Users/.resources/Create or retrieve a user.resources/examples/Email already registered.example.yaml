@@ -1,0 +1,31 @@
+$kind: http-example
+request:
+  url: http://{{baseUrl}}/users
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "name": "Alice",
+        "email": "alice@example.com"
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "user": {
+          "id": "u1",
+          "name": "Alice",
+          "email": "alice@example.com"
+        },
+        "existing": true
+      }
+order: 1000

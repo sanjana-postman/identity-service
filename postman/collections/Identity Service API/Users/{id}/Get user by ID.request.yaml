@@ -1,0 +1,14 @@
+$kind: http-request
+url: http://{{baseUrl}}:/users/:id#
+method: GET
+headers:
+  Accept: application/json
+pathVariables:
+  - key: id
+    value: u1
+    description: The user ID (e.g. u1, u2)
+body:
+  type: text
+  content: ""
+examples: ./.resources/Get user by ID.resources/examples
+order: 1000

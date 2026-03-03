@@ -1,0 +1,15 @@
+body:
+  content: ""
+  type: text
+examples: ./.resources/Get user by ID.resources/examples
+headers:
+  - key: Accept
+    value: application/json
+method: GET
+order: 3000
+pathVariables:
+  - description: The user ID (e.g. u1, u2)
+    key: id
+    value: u1
+type: http
+url: http://{{baseUrl}}/users/:id

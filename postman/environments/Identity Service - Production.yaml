@@ -1,0 +1,6 @@
+name: Identity Service - Production
+values:
+  - key: baseUrl
+    value: identity-service.example.com
+    enabled: true
+    type: default

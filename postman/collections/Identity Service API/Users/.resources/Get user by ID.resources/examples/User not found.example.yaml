@@ -1,0 +1,26 @@
+body:
+  content: ""
+  type: text
+headers:
+  - key: Accept
+    value: application/json
+method: GET
+name: User not found
+order: 2000
+pathVariables:
+  - description: The user ID (e.g. u1, u2)
+    key: id
+    value: u1
+response:
+  body:
+    content: |-
+      {
+        "error": "user not found"
+      }
+    type: json
+  headers:
+    - key: Content-Type
+      value: application/json
+  statusCode: 404
+  statusText: Not Found
+url: http://{{baseUrl}}/users/:id

@@ -1,0 +1,21 @@
+$kind: http-example
+request:
+  url: http://{{baseUrl}}/users
+  method: GET
+  headers:
+    Accept: application/json
+  body:
+    type: text
+    content: ""
+response:
+  statusCode: 500
+  statusText: Internal Server Error
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "error": "internal server error"
+      }
+order: 2000
