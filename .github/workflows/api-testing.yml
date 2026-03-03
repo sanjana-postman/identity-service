@@ -59,11 +59,7 @@ jobs:
       
       - name: Run Postman Collection
         run: |
-          postman collection run "postman/collections/Identity Service API.identity-service-openapi.yaml" \
-            --env-var "baseUrl=http://localhost:3001" \
-            --reporters cli,json \
-            --reporter-json-export test-results.json \
-            --report-events
+          postman collection run 52557247-7f8b5915-e65f-47ab-a155-1ccfa4e94bfd -e 52557247-9bf30e90-4b82-4c83-9c6d-2e01957ebd36 --report-events
       
       - name: Upload Test Results
         if: always()
