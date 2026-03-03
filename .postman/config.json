@@ -1,0 +1,19 @@
+{
+  "workspace": {
+    "id": "67a6432a-1d99-456e-b8bb-52c5174a017c"
+  },
+  "entities": {
+    "collections": [
+      "../postman/collections/Identity Service API_52557247-7f8b5915-e65f-47ab-a155-1ccfa4e94bfd.postman_collection.json"
+    ],
+    "environments": [
+      "../postman/environments/Identity Mock_9bf30e90-4b82-4c83-9c6d-2e01957ebd36.postman_environment.json",
+      "../postman/environments/Identity Service - Production_a4ce5da5-c881-4e94-907d-b898cf20d2e4.postman_environment.json",
+      "../postman/environments/Identity Service - UAT_8ae7bcd3-65f0-492b-b114-10ce85ea8126.postman_environment.json",
+      "../postman/environments/Identity Service - Local_c3258204-5dc4-4dcd-a0d0-1192211fad74.postman_environment.json"
+    ],
+    "specs": [],
+    "flows": [],
+    "globals": []
+  }
+}

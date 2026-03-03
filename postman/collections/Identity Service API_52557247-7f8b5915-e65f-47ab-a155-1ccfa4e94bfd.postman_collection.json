@@ -1,0 +1,997 @@
+{
+  "info": {
+    "_postman_id": "7f8b5915-e65f-47ab-a155-1ccfa4e94bfd",
+    "name": "Identity Service API",
+    "description": "# Identity Service API\n\nThe **Identity Service API** provides in-memory identity and user management capabilities. Use this API to create, retrieve, and manage users within your application.\n\n## Base URL\n\nAll requests use the `{{baseUrl}}` variable. Make sure to configure this in your environment before making requests.\n\n## Authentication\n\nNo authentication is required for this API.\n\n## Environments\n\n- **Local** – For local development\n    \n- **UAT** – For user acceptance testing\n    \n- **Production** – For production use",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "{id}",
+          "item": [
+            {
+              "name": "Get user by ID",
+              "event": [
+                {
+                  "id": "b9ef6a12-704e-4d83-892c-73d2b742587c",
+                  "listen": "test",
+                  "script": {
+                    "id": "6004da2e-5f8b-454a-abc0-278aba672948",
+                    "exec": [
+                      "// ===== CONTRACT TESTS =====",
+                      "",
+                      "// [Positive] Status code is 200 for a valid user",
+                      "pm.test('[Contract] Status code is 200', () => {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "// [Positive] Response Content-Type is application/json",
+                      "pm.test('[Contract] Response Content-Type is application/json', () => {",
+                      "    pm.expect(pm.response.headers.get('Content-Type')).to.include('text/html; charset=utf-8');",
+                      "});",
+                      "",
+                      "// [Positive] Response body is an object (not an array)",
+                      "pm.test('[Contract] Response body is an object', () => {",
+                      "    const json = pm.response.json();",
+                      "    pm.expect(json).to.be.an('object').and.not.an('array');",
+                      "});",
+                      "",
+                      "// [Positive] Response has required fields: id, name, email",
+                      "pm.test('[Contract] Response contains id, name, and email fields', () => {",
+                      "    const json = pm.response.json();",
+                      "    pm.expect(json).to.have.property('id');",
+                      "    pm.expect(json).to.have.property('name');",
+                      "    pm.expect(json).to.have.property('email');",
+                      "});",
+                      "",
+                      "// [Positive] Returned id matches the requested path variable",
+                      "pm.test('[Contract] Returned id matches the requested :id', () => {",
+                      "    const json = pm.response.json();",
+                      "    const requestedId = pm.request.url.variables.get('id');",
+                      "    if (requestedId) {",
+                      "        pm.expect(String(json.id)).to.equal(String(requestedId));",
+                      "    }",
+                      "});",
+                      "",
+                      "// [Positive] name and email are non-empty strings",
+                      "pm.test('[Contract] name and email are non-empty strings', () => {",
+                      "    const json = pm.response.json();",
+                      "    pm.expect(json.name).to.be.a('string').and.not.empty;",
+                      "    pm.expect(json.email).to.be.a('string').and.not.empty;",
+                      "});",
+                      "",
+                      "// [Negative] 404 is returned for a non-existent user ID",
+                      "pm.test('[Contract - Negative] Non-existent ID returns 404', () => {",
+                      "    // This test is only evaluated when the response is 404",
+                      "    if (pm.response.code === 404) {",
+                      "        const json = pm.response.json();",
+                      "        pm.expect(json).to.have.property('error').or.have.property('message');",
+                      "    } else {",
+                      "        pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+                      "    }",
+                      "});",
+                      "",
+                      "// ===== PERFORMANCE TESTS =====",
+                      "",
+                      "// [Positive] Response time is under 800ms",
+                      "pm.test('[Performance] Response time is under 1000ms', () => {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                      "});",
+                      "",
+                      "// [Negative] Response time does not exceed 2000ms",
+                      "pm.test('[Performance] Response time does not exceed 2000ms', () => {",
+                      "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "id": "5eb5de69-07c1-4740-8d02-0e72b35d59e1",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}:/users/:id#",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "port": "",
+                  "path": [
+                    "users",
+                    ":id"
+                  ],
+                  "hash": "",
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "u1",
+                      "description": "The user ID (e.g. u1, u2)"
+                    }
+                  ]
+                },
+                "description": "Retrieves a single user by their unique identifier.\n\n**Method:** GET  \n**URL:** `{{baseUrl}}/users/:id`\n\n### Path Parameters\n| Parameter | Type   | Description          |\n|-----------|--------|----------------------|\n| `id`      | string | The unique user ID   |\n\n### Responses\n- `200 OK` – User found and returned\n- `404 Not Found` – No user exists with the given ID"
+              },
+              "response": [
+                {
+                  "id": "c5a4dde1-131a-4512-b52e-a17b3b3ced37",
+                  "name": "Internal server error",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "text"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}:/users/:id#",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "port": "",
+                      "path": [
+                        "users",
+                        ":id"
+                      ],
+                      "hash": "",
+                      "variable": [
+                        {
+                          "key": "id",
+                          "value": "u1",
+                          "description": "The user ID (e.g. u1, u2)"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Internal Server Error",
+                  "code": 500,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json",
+                      "description": "",
+                      "disabled": false
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"internal server error\"\n}"
+                },
+                {
+                  "id": "ba07b77f-0a93-42f5-8eaf-9cc573af8a7f",
+                  "name": "User not found",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "text"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/users/:id",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "users",
+                        ":id"
+                      ],
+                      "variable": [
+                        {
+                          "key": "id",
+                          "value": "u_999"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "_postman_previewlanguage": "json",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{ \"error\": \"Not Found\", \"message\": \"User with the given ID does not exist\" }"
+                },
+                {
+                  "id": "b028a0b8-d89c-46c0-a1d2-6c0364532e17",
+                  "name": "User found",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/users/:id",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "users",
+                        ":id"
+                      ],
+                      "variable": [
+                        {
+                          "key": "id",
+                          "value": "u1"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{ \"id\": \"u1\", \"name\": \"Alice Smith\", \"email\": \"alice@example.com\" }"
+                }
+              ]
+            }
+          ],
+          "id": "d941ac43-07d4-4039-ac6f-46d367153735",
+          "description": "## User by ID\n\nEndpoints for interacting with a specific user identified by their unique ID. Pass the user's ID as a path parameter (`:id`) in the request URL."
+        },
+        {
+          "name": "Create or retrieve a user",
+          "event": [
+            {
+              "id": "4b868201-fd4b-40db-8930-3be93dd392c9",
+              "listen": "test",
+              "script": {
+                "id": "99107714-2e9d-44fa-a95e-aea84aa2032d",
+                "exec": [
+                  "// ===== CONTRACT TESTS =====",
+                  "",
+                  "// [Positive] Status code is 200 or 201",
+                  "pm.test('[Contract] Status code is 200 or 201', () => {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "// [Positive] Response Content-Type is application/json",
+                  "pm.test('[Contract] Response Content-Type is application/json', () => {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "// [Positive] Response body is an object (not an array)",
+                  "pm.test('[Contract] Response body is an object', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('object').and.not.an('array');",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "// [Negative] Response does not contain a password or sensitive field",
+                  "pm.test('[Contract - Negative] Response does not expose sensitive fields (password, secret)', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.not.have.property('password');",
+                  "    pm.expect(json).to.not.have.property('secret');",
+                  "});",
+                  "",
+                  "// [Negative] 400 is returned when required fields are missing (evaluated only on 400)",
+                  "pm.test('[Contract - Negative] 400 response contains an error message', () => {",
+                  "    if (pm.response.code === 400) {",
+                  "        const json = pm.response.json();",
+                  "        pm.expect(json).to.have.any.keys('error', 'message');",
+                  "    } else {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    }",
+                  "});",
+                  "",
+                  "// ===== PERFORMANCE TESTS =====",
+                  "",
+                  "// [Positive] Response time is under 1000ms",
+                  "pm.test('[Performance] Response time is under 1000ms', () => {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "",
+                  "// [Negative] Response time does not exceed 3000ms",
+                  "pm.test('[Performance] Response time does not exceed 3000ms', () => {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "665a129f-cb89-4691-a6ce-9f030046bb3e",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Creates a new user or retrieves an existing user if one with the same details already exists.\n\n**Method:** POST  \n**URL:** `{{baseUrl}}/users`\n\n### Request Body\nSend a JSON object with the user's details. Example:\n```json\n{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane.doe@example.com\"\n}\n```\n\n### Responses\n- `200 OK` – User already exists and is returned\n- `201 Created` – New user successfully created\n- `400 Bad Request` – Invalid request body"
+          },
+          "response": [
+            {
+              "id": "7f427f51-620c-469c-ad07-cba07ae56a32",
+              "name": "Email already registered",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Alice\",\n  \"email\": \"alice@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "disabled": false
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"user\": {\n    \"id\": \"u1\",\n    \"name\": \"Alice\",\n    \"email\": \"alice@example.com\"\n  },\n  \"existing\": true\n}"
+            },
+            {
+              "id": "f6aa6a4f-d177-444f-811d-9419c3ec4163",
+              "name": "Missing required fields",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Alice\",\n  \"email\": \"alice@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "disabled": false
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"error\": \"name and email are required\"\n}"
+            },
+            {
+              "id": "99c24687-74ea-4701-adf4-11c8e74e0688",
+              "name": "Internal server error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Alice\",\n  \"email\": \"alice@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "disabled": false
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"error\": \"internal server error\"\n}"
+            },
+            {
+              "id": "1fecdff2-f81a-40bf-bb57-20219eb5bff3",
+              "name": "User already exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{ \"id\": \"u_001\", \"email\": \"alice@example.com\", \"name\": \"Alice\", \"created\": false }"
+            },
+            {
+              "id": "9212c6e1-10ec-4861-b9f1-b59f1c7996fd",
+              "name": "Bad request",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{ \"error\": \"Bad Request\", \"message\": \"email is required\" }"
+            },
+            {
+              "id": "8be2f1b7-284e-42c8-b30a-cecc376bee68",
+              "name": "New user created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{ \"name\": \"Bob Jones\", \"email\": \"bob@example.com\" }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "enabled": true
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{ \"id\": \"u2\", \"name\": \"Bob Jones\", \"email\": \"bob@example.com\" }"
+            }
+          ]
+        },
+        {
+          "name": "List all users",
+          "event": [
+            {
+              "id": "36c8395a-8702-4185-a8fa-aa85974024e7",
+              "listen": "test",
+              "script": {
+                "id": "eccf62cb-460b-4954-8a9e-92eecee4e9d6",
+                "exec": [
+                  "// ===== CONTRACT TESTS =====",
+                  "",
+                  "// [Positive] Status code is 200",
+                  "pm.test('[Contract] Status code is 200', () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// [Positive] Response Content-Type is application/json",
+                  "pm.test('[Contract] Response Content-Type is application/json', () => {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('text/html; charset=utf-8');",
+                  "});",
+                  "",
+                  "// [Positive] Response body is an array",
+                  "pm.test('[Contract] Response body is an array', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array');",
+                  "});",
+                  "",
+                  "// [Positive] Each user object has required fields: id, name, email",
+                  "pm.test('[Contract] Each user has id, name, and email fields', () => {",
+                  "    const json = pm.response.json();",
+                  "    json.forEach(user => {",
+                  "        pm.expect(user).to.have.property('id');",
+                  "        pm.expect(user).to.have.property('name');",
+                  "        pm.expect(user).to.have.property('email');",
+                  "    });",
+                  "});",
+                  "",
+                  "// [Positive] id is a string or number, name and email are strings",
+                  "pm.test('[Contract] User field types are correct', () => {",
+                  "    const json = pm.response.json();",
+                  "    json.forEach(user => {",
+                  "        pm.expect(user.id).to.satisfy(id => typeof id === 'string' || typeof id === 'number');",
+                  "        pm.expect(user.name).to.be.a('string');",
+                  "        pm.expect(user.email).to.be.a('string');",
+                  "    });",
+                  "});",
+                  "",
+                  "// [Negative] Response is not an object (should be an array, not a wrapped object)",
+                  "pm.test('[Contract] Response is not a plain object (must be an array)', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.not.be.an('object').that.has.property('users');",
+                  "});",
+                  "",
+                  "// ===== PERFORMANCE TESTS =====",
+                  "",
+                  "// [Positive] Response time is under 800ms",
+                  "pm.test('[Performance] Response time is under 1000ms', () => {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});",
+                  "",
+                  "// [Negative] Response time does not exceed 2000ms",
+                  "pm.test('[Performance] Response time does not exceed 2000ms', () => {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "508b8086-ede2-4260-8746-417326c4492c",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Returns a list of all users currently stored in the identity service.\n\n**Method:** GET  \n**URL:** `{{baseUrl}}/users`\n\n### Responses\n- `200 OK` – Successfully returns an array of user objects"
+          },
+          "response": [
+            {
+              "id": "ef1b9e69-6fe4-474f-a83b-7f81b7539c8c",
+              "name": "Internal server error",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "disabled": false
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"error\": \"internal server error\"\n}"
+            },
+            {
+              "id": "6bf902aa-9cc8-4491-943f-648eb769ac0f",
+              "name": "A list of all users",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "responseTime": null,
+              "body": "[{ \"id\": \"u1\", \"name\": \"Alice Smith\", \"email\": \"alice@example.com\" }, { \"id\": \"u2\", \"name\": \"Bob Jones\", \"email\": \"bob@example.com\" }]"
+            }
+          ]
+        }
+      ],
+      "id": "d4192be7-bb5c-42d7-9f27-0a53f1618985",
+      "description": "## Users\n\nEndpoints for managing users in the identity service. Supports creating new users, retrieving existing users, and listing all users."
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health check",
+          "event": [
+            {
+              "id": "144fb199-6d91-4590-8018-cd11ccdd99bc",
+              "listen": "test",
+              "script": {
+                "id": "69651a71-207d-46b3-9047-f3971c7c68c4",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has status field\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"status\");",
+                  "});",
+                  "",
+                  "pm.test(\"Status is ok\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"ok\");",
+                  "});",
+                  "",
+                  "pm.test(\"No error field in response\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.not.have.property(\"error\");",
+                  "});",
+                  "",
+                  "",
+                  "pm.test(\"Response time is within hard limit\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "d5fdb203-3a7e-41f3-adf5-92b3b2986539",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Checks whether the Identity Service is up and running.\n\n**Method:** GET  \n**URL:** `{{baseUrl}}/health`\n\n### Responses\n- `200 OK` – Service is healthy and operational"
+          },
+          "response": [
+            {
+              "id": "1902a622-5b09-4887-b56c-1a2034f78bbd",
+              "name": "Internal server error",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://{{baseUrl}}/health",
+                  "protocol": "http",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "disabled": false,
+                  "description": ""
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"error\": \"internal server error\"\n}"
+            },
+            {
+              "id": "cf9173e2-9eed-4b16-988d-133e9ee97a31",
+              "name": "Healthy",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/health",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{ \"status\": \"ok\" }"
+            }
+          ]
+        }
+      ],
+      "id": "6a56d795-73d5-4b6f-8335-42c20941ef11",
+      "description": "## Health\n\nEndpoints for checking the operational status of the Identity Service. Use the health check endpoint to verify the service is running correctly."
+    }
+  ],
+  "variable": [
+    {
+      "id": "e8fde06f-7fc7-47d0-b0c2-456057e0acad",
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    }
+  ]
+}
